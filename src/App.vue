@@ -1,17 +1,42 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <AddBookItem @add-book-event="addBook" />
+    <Books :books="books" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Books from './components/Books.vue';
+import AddBookItem from './components/AddBookItem.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Books,
+    AddBookItem
+  },
+  data() {
+    return {
+      books: []
+    }
+  },
+  methods: {
+    addBook(newBook) {
+      this.books = [...this.books, newBook]
+    }
+  },
+  watch: {
+    books: {
+      handler() {
+        localStorage.setItem('books', JSON.stringify(this.books))
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    if (localStorage.getItem('books')) {
+      this.books = JSON.parse(localStorage.getItem('books'))
+    }
   }
 }
 </script>
@@ -23,6 +48,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
